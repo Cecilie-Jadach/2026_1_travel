@@ -14,8 +14,6 @@ app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
-
-
 ##############################
 @app.get("/signup")
 @x.no_cache
@@ -91,8 +89,6 @@ def api_create_user():
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
 
-
-
 ##############################
 @app.get("/login")
 @x.no_cache
@@ -105,7 +101,6 @@ def show_login():
     except Exception as ex:
         ic(ex)
         return "ups"
-
 
 ##############################
 @app.post("/api-login")
@@ -164,11 +159,16 @@ def show_profile():
     try:
         user = session.get("user", "")
         if not user: return redirect("/login")
-        return render_template("page_profile.html", user=user, x=x)
+
+        db, cursor = x.db()
+        q = "SELECT * FROM user_destinations WHERE user_fk = %s"
+        cursor.execute(q,(user["user_pk"],))
+        destinations = cursor.fetchall()
+
+        return render_template("page_profile.html", user=user, x=x, countries=x.COUNTRIES, destinations=destinations)
     except Exception as ex:
         ic(ex)
         return "ups"
-
 
 ##############################
 @app.get("/logout")
@@ -178,4 +178,269 @@ def logout():
         return redirect("/login")
     except Exception as ex:
         ic(ex)
-        return "ups"        
+        return "ups"    
+
+##############################
+@app.delete("/user_destinations/<destination_pk>")
+def delete_destination(destination_pk):
+    try: 
+        db, cursor = x.db()
+        q = "DELETE FROM user_destinations WHERE destination_pk = %s"
+        cursor.execute(q, (destination_pk,))
+        db.commit()
+
+        return f"""<browser mix-remove="#destination-{destination_pk}" 
+                mix-fade-2000></browser> """
+    except Exception as ex: 
+        ic(ex)
+        return "ups ...", 500
+    finally: 
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+
+##############################
+@app.get("/user_destinations/<destination_pk>")
+def get_destination_by_id(destination_pk):
+    try:
+        # Best case scenario
+        # TODO: Validate the id
+
+        db, cursor = x.db()
+        q = "SELECT * FROM user_destinations WHERE destination_pk = %s"
+        cursor.execute(q, (destination_pk,))
+        destination = cursor.fetchone()
+
+        destination_more_html = render_template("___destination_more.html", destination=destination)
+
+        return f"""
+            <browser>
+            {destination_more_html}
+            </browser>
+        """
+    except Exception as ex:
+        ic(ex)
+        return "ups ...", 500
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+
+##############################
+@app.get("/travel-details/<destination_pk>")
+@x.no_cache
+def travel_detail(destination_pk):
+    try:
+        user = session.get("user", "")
+        if not user: return redirect("/login")
+
+        db, cursor = x.db()
+        q = "SELECT * FROM user_destinations WHERE destination_pk = %s AND user_fk = %s"
+        cursor.execute(q, (destination_pk, user["user_pk"]))
+        destination = cursor.fetchone()
+        db.commit()
+
+        if not destination:
+            return redirect("/profile")
+
+        return render_template("page_travel_details.html", user=user, x=x, countries=x.COUNTRIES, destination=destination)
+    except Exception as ex:
+        ic(ex)
+        return "Could not get edit page",500
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+
+##############################
+@app.get("/update-destination/<destination_pk>")
+@x.no_cache
+def show_update_destination(destination_pk):
+    try:
+        user = session.get("user", "")
+        if not user: return redirect("/login")
+
+        db, cursor = x.db()
+        q = "SELECT * FROM user_destinations WHERE destination_pk = %s AND user_fk = %s"
+        cursor.execute(q, (destination_pk, user["user_pk"]))
+        destination = cursor.fetchone()
+        db.commit()
+
+        if not destination:
+            return redirect("/profile")
+
+        return render_template("page_update_destination.html", user=user, x=x, countries=x.COUNTRIES, destination=destination)
+    except Exception as ex:
+        ic(ex)
+        return "Could not get edit page",500
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+
+##############################
+@app.patch("/api-update-destination/<destination_pk>")
+def update_destination_by_id(destination_pk):
+    try:
+
+        parts = []
+        values = []
+
+        destination_title = request.form.get("destination_title", "")
+        destination_title = destination_title.strip()
+        if destination_title:
+            parts.append("destination_title = %s")
+            values.append(destination_title)
+
+        destination_start_date = request.form.get("destination_start_date", "")
+        destination_start_date = destination_start_date
+        if destination_start_date:
+            parts.append("destination_start_date = %s")
+            values.append(destination_start_date)
+        
+        destination_end_date = request.form.get("destination_end_date", "")
+        destination_end_date = destination_end_date
+        if destination_end_date:
+            parts.append("destination_end_date = %s")
+            values.append(destination_end_date)
+        
+        destination_description = request.form.get("destination_description", "")
+        destination_description = destination_description.strip()
+        if destination_description:
+            parts.append("destination_description = %s")
+            values.append(destination_description)
+        
+        destination_location = request.form.get("destination_location", "")
+        destination_location = destination_location.strip()
+        if destination_location:
+            parts.append("destination_location = %s")
+            values.append(destination_location)
+        
+        destination_country = request.form.get("destination_country", "")
+        # destination_country = destination_country.strip()
+        if destination_country:
+            parts.append("destination_country = %s")
+            values.append(destination_country)
+
+        if not parts: return "nothing to update", 400
+        # Convert the list to a string with a comma in between
+
+        values.append(destination_pk)
+        partial_query = ", ".join(parts)
+
+        # ic(parts)
+        # ic(values)
+        ic(partial_query)
+
+        q = f"""
+            UPDATE user_destinations
+            SET	{partial_query}
+            WHERE destination_pk = %s
+        """
+
+        db, cursor = x.db()
+        cursor.execute(q, values)
+        db.commit()
+
+        return """ <browser mix-redirect="page_profile.html"></browser>"""
+
+
+    except Exception as ex:
+        print(ex)
+        # Cast the exception to an string
+        return str(ex), 500 # Internal server error
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+
+##############################
+@app.get("/create-destination")
+@x.no_cache
+def show_create_destination():
+    try:
+        user = session.get("user", "")
+        if not user: return redirect("/login")
+
+        db, cursor = x.db()
+        q = "SELECT * FROM user_destinations WHERE user_fk = %s"
+        cursor.execute(q,(user["user_pk"],))
+
+        return render_template("page_create_destination.html", user=user, x=x, countries=x.COUNTRIES)
+    except Exception as ex:
+        return "system under maintenance ...", 500
+
+##############################
+@app.post("/api-add-destination")
+def add_destination():
+    try:
+        destination_title = x.validate_destination_title()
+        destination_pk = uuid.uuid4().hex
+        destination_start_date = x.validate_destination_start_date()
+        destination_end_date = x.validate_destination_end_date(destination_start_date)
+        destination_description = x.validate_destination_description()
+        destination_location = x.validate_destination_location()
+        destination_country = x.validate_destination_country()
+    
+        if not session.get("user"):
+            return "Login please", 401
+        
+        logged_in_user_pk = session["user"]["user_pk"]
+
+        db, cursor = x.db()
+        q = "INSERT INTO user_destinations VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(q, (logged_in_user_pk, destination_pk, destination_title, destination_start_date, destination_end_date, destination_description, destination_location, destination_country))
+        db.commit()
+
+        destination = {
+            "destination_pk": destination_pk, 
+            "destination_title": destination_title,
+            "destination_start_date": destination_start_date,
+            "destination_end_date": destination_end_date,
+            "destination_description": destination_description,
+            "destination_location": destination_location,
+            "destination_country" : destination_country
+        }
+
+        message = "Destination created!"
+        
+        destination_html = render_template("___destination.html", destination=destination)
+        ___tip = render_template("___tip.html", status="ok", message=message)
+    
+    
+        return f"""
+        <browser 
+            mix-after-begin="#destinations" mix-redirect="/profile"
+        >
+            {destination_html}
+        </browser>
+        <browser mix-after-begin="#tooltip">{___tip}</browser>
+        """
+
+    except Exception as ex: 
+
+        ic(ex)
+
+        if "--error-- destination_title" in str(ex):
+            error_message = f"destination title invalid"
+            ___tip = render_template("___tip.html", status="error", message=error_message)
+            return f"""<browser mix-after-begin="#tooltip">{___tip}</browser>""", 400
+
+        if "--error-- destination_description" in str(ex):
+            error_message = f"destination description invalid"
+            ___tip = render_template("___tip.html", status="error", message=error_message)
+            return f"""<browser mix-after-begin="#tooltip">{___tip}</browser>""", 400
+
+        if "--error-- destination_location" in str(ex):
+            error_message = f"destination location invalid"
+            ___tip = render_template("___tip.html", status="error", message=error_message)
+            return f"""<browser mix-after-begin="#tooltip">{___tip}</browser>""", 400
+
+        if "--error-- end date can not be before start date" in str(ex):
+            error_message = "End date can not be before start date"
+            ___tip = render_template("___tip.html", status="error", message=error_message)
+            return f"""<browser mix-after-begin="#tooltip">{___tip}</browser>""", 400
+
+        # Worst case
+        error_message = "System under maintenance"
+        ___tip = render_template("___tip.html", status="error", message=error_message)        
+        return f"""<browser mix-after-begin="#tooltip">{___tip}</browser>""", 500
+
+    finally: 
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()

@@ -1,0 +1,24 @@
+<div id="destination-{{ destination.destination_pk }}" class="destination">
+    
+    <form>
+        <input name="destination_title" type="text" value="{{ destination.destination_title }}">
+        <input name="destination_start_date" type="date" value="{{ destination.destination_start_date }}">
+        <input name="destination_end_date" type="date" value="{{ destination.destination_end_date }}">
+        <!-- <input name="destination_description" type="text" value="{{ destination.destination_description }}"> -->
+        <input name="destination_location" type="text" value="{{ destination.destination_location }}">
+        <!-- <input name="destination_country" type="text" value="{{ destination.destination_country }}"> -->
+        
+
+        <button mix-delete="/user_destinations/{{ destination.destination_pk }}">
+            Delete
+        </button>
+        <a href="/travel-details/{{ destination.destination_pk }}">
+            Show more
+        </a>
+        <a href="/update-destination/{{ destination.destination_pk }}">
+            Update destination
+        </a>
+    </form>
+
+
+</div>
