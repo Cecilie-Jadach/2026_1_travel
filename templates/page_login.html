@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/app.css">
-    <script src="/static/js/dist/app.js" defer></script>
+    <script src="/static/js/dist/login.js" defer></script>
     <title>Login</title>
 </head>
 <body>
@@ -15,7 +15,7 @@
 <main>
     <div id="tooltip"></div>
     <section class="form-container">
-        <form mix-post="/api-login" autocomplete="off">
+        <form id="formLogin" mix-post="/api-login" autocomplete="off" novalidate>
         <div>
             <label for="user_email_login">
                 Email
@@ -26,6 +26,8 @@
                     placeholder="Email" 
                     value="" 
                     mix-validate="{{x.REGEX_USER_EMAIL}}">
+
+                    <ul id="email_errors_login"></ul>
         </div>
 
         <div>
@@ -36,10 +38,15 @@
                     name="user_password" 
                     type="password" 
                     placeholder="Password" 
+                    required
+                    minlength="8"
+                    maxlength="50"
                     value="" 
                     mix-validate="{{x.REGEX_USER_PASSWORD}}">
+
+                    <ul id="password_errors_login"></ul>
         </div>
-        <button class="primary-btn">
+        <button class="primary_btn">
             Login
         </button>
         <p>Don't have an account? <a href="/signup">Sign up</a></p>

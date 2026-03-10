@@ -1,59 +1,71 @@
     
     <div id="tooltip"></div>
     <div class="form-container">
-        <form mix-post="/api-create-user" autocomplete="off">
+        <form id="formSignup" mix-post="/api-create-user" autocomplete="off" novalidate>
         
         <div>
             <label for="user_first_name">
-                First name <span>{{ x.USER_FIRST_NAME_MIN }} to {{ x.USER_FIRST_NAME_MAX }} characters</span>
+                First name* <span>{{ x.USER_FIRST_NAME_MIN }} to {{ x.USER_FIRST_NAME_MAX }} characters</span>
             </label>
             <input  id="user_first_name"
                     name="user_first_name" 
                     type="text" 
                     placeholder="First name" 
-                    value="" 
+                    value=""
+                    required
                     mix-validate="{{x.REGEX_USER_FIRST_NAME}}">
+
+                    <ul id="user_first_name_errors_signup"></ul>
         </div>
 
         <div>
             <label for="user_last_name">
-                Last name <span>{{ x.USER_LAST_NAME_MIN }} to {{ x.USER_LAST_NAME_MAX }} characters</span>
+                Last name* <span>{{ x.USER_LAST_NAME_MIN }} to {{ x.USER_LAST_NAME_MAX }} characters</span>
             </label>
             <input  id="user_last_name"
                     name="user_last_name" 
                     type="text" 
                     placeholder="Last name" 
+                    required
                     value="" 
                     mix-validate="{{x.REGEX_USER_LAST_NAME}}">
+
+                    <ul id="user_last_name_errors_signup"></ul>
         </div>
 
         <div>
             <label for="user_email">
-                Email
+                Email*
             </label>
             <input  id="user_email"
                     name="user_email" 
                     type="text" 
                     placeholder="Email" 
+                    required
                     value="" 
                     mix-validate="{{x.REGEX_USER_EMAIL}}">
+
+                    <ul id="email_errors_signup"></ul>
         </div>
 
         <div>
             <label for="user_password">
-                Password <span>{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }} characters</span>
+                Password* <span>{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }} characters</span>
             </label>
             <input  id="user_password"
                     name="user_password" 
                     type="password" 
-                    placeholder="Password" 
+                    placeholder="Password"
+                    required
                     value="" 
                     mix-validate="{{x.REGEX_USER_PASSWORD}}">
+
+                    <ul id="password_errors_signup"></ul>
         </div>
 
 
 
-        <button class="primary-btn">
+        <button class="primary_btn">
             Sign up
         </button>
     </form>
