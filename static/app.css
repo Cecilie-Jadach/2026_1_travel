@@ -40,12 +40,16 @@ form{
         flex-direction: column;
         gap: 8px;
 
-        input{
+        input, select{
             width: 100%;
             border-radius: 8px;
             border: solid 1px #D9D9D9;
             padding: 12px 16px;
         }
+    }
+
+    input[type="date"] {
+        
     }
 
     label{
