@@ -132,12 +132,12 @@ def api_login():
         ic(ex)
 
 
-        if "company_exception user_email" in str(ex):
+        if "--error-- user_email" in str(ex):
             error_message = f"user email invalid"
             ___tip = render_template("___tip.html", status="error", message=error_message)
             return f"""<browser mix-after-begin="#tooltip">{___tip}</browser>""", 400
 
-        if "company_exception user_password" in str(ex):
+        if "--error-- user_password" in str(ex):
             error_message = f"user password {x.USER_PASSWORD_MIN} to {x.USER_PASSWORD_MAX} characters"
             ___tip = render_template("___tip.html", status="error", message=error_message)
             return f"""<browser mix-after-begin="#tooltip">{___tip}</browser>""", 400
