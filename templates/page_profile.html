@@ -1,25 +1,21 @@
 {% include "_header.html" %}
 
 <main>
-<h1>Welcome {{ user.user_first_name }}</h1>
-
-
+<h1>Welcome {{ user.user_first_name }}!</h1>
 <section>
         <div id="destinations">
-            
             {% for destination in destinations %}
                 {% include "___destination.html" %}
             {% else %}
-                {# Dette vises kun, hvis listen 'destinations' er tom #}
                 <p>Du har ikke logget nogen rejser endnu.</p>
             {% endfor %}
             
         </div>
     </section>
 <div>
-    <a>
-    <a href="/create-destination">Log new travel destination</a>
-    </a>
+    <button class="primary-btn">
+        <a href="/create-destination">Log new travel destination</a>
+    </button>
 </div>
 </main>
 

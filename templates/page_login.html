@@ -1,30 +1,50 @@
-{% include "_header.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/app.css">
+    <script src="/static/js/dist/app.js" defer></script>
+    <title>Login</title>
+</head>
+<body>
 
 <main>
-    <form mix-post="/api-login" autocomplete="off">
-        
+    <div id="tooltip"></div>
+    <section class="form-container">
+        <form mix-post="/api-login" autocomplete="off">
         <div>
-            <label for="">
+            <label for="user_email_login">
                 Email
             </label>
-            <input name="user_email" type="text" placeholder="user email" value="" 
-            mix-validate="{{x.REGEX_USER_EMAIL}}">
+            <input  id="user_email_login"
+                    name="user_email" 
+                    type="text" 
+                    placeholder="Email" 
+                    value="" 
+                    mix-validate="{{x.REGEX_USER_EMAIL}}">
         </div>
 
         <div>
-            <label for="">
+            <label for="user_password_login">
                 Password <span>{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }} characters</span>
             </label>
-            <input name="user_password" type="password" placeholder="user password" value="" 
-            mix-validate="{{x.REGEX_USER_PASSWORD}}">
+            <input  id="user_password_login"
+                    name="user_password" 
+                    type="password" 
+                    placeholder="Password" 
+                    value="" 
+                    mix-validate="{{x.REGEX_USER_PASSWORD}}">
         </div>
-
-
-
-        <button>
+        <button class="primary-btn">
             Login
         </button>
+        <p>Don't have an account? <a href="/signup">Sign up</a></p>
     </form>
+    </section>
 </main>
 
 {% include "_footer.html" %}
