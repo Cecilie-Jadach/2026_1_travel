@@ -1,21 +1,24 @@
 {% include "_header.html" %}
 
 <main>
-<h1>Welcome {{ user.user_first_name }}!</h1>
+<section class="user-container">
+    <div>
+        <h1>Welcome {{ user.user_first_name }}!</h1>
+        <p>Start logging your travels!</p>
+    </div>
+</section>
 <section>
-        <div id="destinations">
+        <div id="destinations" class="destination-wrapper">
             {% for destination in destinations %}
                 {% include "___destination.html" %}
             {% else %}
-                <p>Du har ikke logget nogen rejser endnu.</p>
+                <p>You have not logged any travels yet.</p>
             {% endfor %}
             
         </div>
     </section>
-<div>
-    <button class="primary-btn">
-        <a href="/create-destination">Log new travel destination</a>
-    </button>
+<div class="sticky-container">
+    <a href="/create-destination">Log new travel destination</a>
 </div>
 </main>
 

@@ -1,24 +1,28 @@
 <div id="destination-{{ destination.destination_pk }}" class="destination">
     
-    <form>
-        <input name="destination_title" type="text" value="{{ destination.destination_title }}">
-        <input name="destination_start_date" type="date" value="{{ destination.destination_start_date }}">
-        <input name="destination_end_date" type="date" value="{{ destination.destination_end_date }}">
-        <!-- <input name="destination_description" type="text" value="{{ destination.destination_description }}"> -->
-        <input name="destination_location" type="text" value="{{ destination.destination_location }}">
-        <!-- <input name="destination_country" type="text" value="{{ destination.destination_country }}"> -->
+    <div class="destination-container">
+        <h2>{{ destination.destination_start_date }} - {{ destination.destination_end_date }}</h2>
+        <div class="flex">
+            <div class="destination-info">
+                <h3>{{ destination.destination_title }}</h3>
+                <div class="flex">
+                    <img src="/static/svg/map-pin.svg" alt="Map pin" width="20" height="20">
+                    <p>{{ destination.destination_location }}, {{ destination.destination_country }}</p>
+                </div>
+            </div>
+            <div class="events-container">
+                <button class="delete-btn" mix-delete="/user_destinations/{{ destination.destination_pk }}"></button>
+                <a class="edit" href="/update-destination/{{ destination.destination_pk }}">
+                    <img src="/static/svg/pen.svg" alt="Pen" width="48" height="48">
+                </a>
+            </div>
+    
+        </div>
         
-
-        <button mix-delete="/user_destinations/{{ destination.destination_pk }}">
-            Delete
-        </button>
-        <a href="/travel-details/{{ destination.destination_pk }}">
+        <a class="secondary_btn" href="/travel-details/{{ destination.destination_pk }}">
             Show more
         </a>
-        <a href="/update-destination/{{ destination.destination_pk }}">
-            Update destination
-        </a>
-    </form>
+    </div>
 
 
 </div>

@@ -48,8 +48,14 @@ form{
         }
     }
 
-    input[type="date"] {
-        
+    svg {
+        width: 24px;
+        height: 24px;
+
+        use {
+            width: 24px;
+        height: 24px;
+        }
     }
 
     label{
@@ -102,6 +108,11 @@ label{
 nav{
     width: 100%;
     height:4rem;
+    position: sticky;
+    top: 20px; /* Afstand fra bunden af skærmen */
+    justify-content: center; /* Centrerer knappen horisontalt */
+    padding: 10px 0;
+    z-index: 100;
 
     ul{
     display: flex;
@@ -109,31 +120,52 @@ nav{
     align-items: center;
     justify-items:center;
     padding: 24px;
-    background-color: gray;
+    background-color: #373737;
     height: 100%;
     border-radius: 8px;
     }
 
-    a{
-        color: white;
+    li {
+
+        a{
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
     }
+
 }
 
-.primary_btn {
-    padding:12px;
+.primary-btn {
+    padding:15px 30px;;
     border-radius: 8px;
     outline: none; 
     background-color:#DDF140;
-    color: black;
+    color: black !important;
 	color: inherit;
 	border: none;
 	font: inherit;
 	cursor: pointer;
 	outline: inherit;
+    text-decoration:none;
+    font-size: 16px;
 
     a{
         all:unset;
     }
+}
+
+.secondary_btn {
+    padding:15px 30px;;
+    border-radius: 8px;
+    outline: none; 
+    background-color:black;
+	color: white;
+	border: none;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+    text-decoration:none;
 }
 
 ul {
@@ -145,22 +177,123 @@ ul {
     }
 }
 
-
-/* #items{
-    width: 100%;
-    height: 100%;
+.destination-wrapper {
     display: grid;
-    grid-template-columns: 10fr 4fr;
-    #left{
+    gap: 24px;
+}
 
-    }
-    #right{
-        padding: 1rem;
-        border-left: 1px solid black;
-        box-shadow: 0px 0px 10px black;
-    }
-} */
+.destination-container {
+    background-color: #8A8A8A;
+    display:grid;
+    gap: 24px;
+    padding: 24px;
+    border-radius: 8px;
 
+    button {
+    outline: none; 
+	color: inherit;
+	border: none;
+	cursor: pointer;
+	outline: inherit;
+    background:none;
+    }
+
+    a {
+        cursor:pointer;
+    }
+
+    h2 {
+        font-size: 12px;
+        font-weight: 400;
+        color: white;
+    }
+
+    h3 {
+        font-size: 24px; 
+        font-weight: 600; 
+        color:white;
+    }
+
+    p {
+        color: white;
+    }
+
+    :last-child {
+        justify-self: end;
+    }
+}
+
+.flex {
+    display: flex;
+    gap: 4px;
+    justify-content:space-between;
+}
+
+.destination-info {
+    display: grid;
+    gap: 8px;
+}
+
+.events-container {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.delete-btn {
+    width: 48px;
+    height: 48px;
+    background-color: transparent !important;
+    background-image: url("/static/svg/trash-can.svg") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    border: none !important;
+    cursor: pointer !important;
+    background-size:cover !important;
+    
+
+    &:hover {
+        opacity: 80%;
+    }
+}
+
+.edit:hover {
+opacity: 80%;
+}
+
+.sticky-container {
+    position: sticky;
+    bottom: 20px; /* Afstand fra bunden af skærmen */
+    display: flex;
+    justify-content: center; /* Centrerer knappen horisontalt */
+    padding: 10px 0;
+    z-index: 100; /* Sikrer at den ligger ovenpå kortene */
+    /* background: linear-gradient(transparent, white 20%); */
+    
+    a{
+    display: inline-block;
+    padding:15px 30px;
+    border-radius: 8px;
+    background-color: #DDF140; 
+    color: black;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+}
+
+.user-container {
+    display: grid; 
+    height: 40vh;
+
+    div {
+        align-self: center;
+
+        h1 {
+            font-size: 48px;
+            font-weight: 400;
+        }
+    }
+}
 
 
 footer{
@@ -170,6 +303,20 @@ footer{
     width: 100%;
     height: 0.5rem;
     background-color: gray;
+}
+
+@media (min-width: 768px) {
+    .destination-wrapper {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px; 
+    }
+}
+
+@media (min-width: 1024px) {
+    .destination-wrapper {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px; 
+    }
 }
 
 

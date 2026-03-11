@@ -17,13 +17,15 @@
 
     <nav>
         <ul>
-            <a href="/profile">Home</a>
-            <!-- <a href="/signup">Signup</a> -->
+            <li>
+                <a href="/profile">Home</a>
+            </li>
     
             {% if not user %}
-                <a href="/login">Login</a>
+                <li><a href="/login">Login</a></li>
             {% else %}
-                <a href="/logout">Logout</a>
+                <li><a href="/logout">Logout</a></li>
             {% endif %}
+
         </ul>
     </nav>
