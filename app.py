@@ -113,6 +113,7 @@ def api_login():
         q = "SELECT * FROM users WHERE user_email = %s"
         cursor.execute(q, (user_email,))
         user = cursor.fetchone()
+        
         if not user:
             error_message = "Invalid credentials 1"
             ___tip = render_template("___tip.html", status="error", message=error_message)
