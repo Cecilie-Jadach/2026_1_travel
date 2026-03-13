@@ -23,7 +23,7 @@ def show_signup():
         return render_template("page_signup.html", user=user, x=x)
     except Exception as ex:
         ic(ex)
-        return "ups"
+        return "System under maintenance", 500
 
 ##############################
 @app.post("/api-create-user")
@@ -34,8 +34,6 @@ def api_create_user():
         user_email = x.validate_user_email()
         user_password = x.validate_user_password()
         user_hashed_password = generate_password_hash(user_password)
-        # ic(user_hashed_password) # 'scrypt:32768:8:1$V0NLEqHQsgKyjyA7$3a9f6420e4e9fa7a4e4ce6c89927e7dcb532e5f557aee6309277243e5882cc4518c94bfd629b61672553362615cd5d668f62eedfe4905620a8c9bb7db573de31'
-
         user_pk = uuid.uuid4().hex
         user_created_at = int(time.time())
 
@@ -47,9 +45,8 @@ def api_create_user():
         form_signup = render_template("___form_signup.html", x=x)
 
         return f"""
-            <browser mix-replace="form">{form_signup}</browser>
             <browser mix-redirect="/login"></browser>
-        """
+        """, 201
 
     except Exception as ex:
         ic(ex)
@@ -97,10 +94,10 @@ def show_login():
         user = session.get("user", "")
         if not user: 
             return render_template("page_login.html", user=user, x=x)
-        return redirect("/profile")
+        return redirect("/profile"), 200
     except Exception as ex:
         ic(ex)
-        return "ups"
+        return "System under maintenance", 500
 
 ##############################
 @app.post("/api-login")
@@ -115,19 +112,19 @@ def api_login():
         user = cursor.fetchone()
         
         if not user:
-            error_message = "Invalid credentials 1"
+            error_message = "Invalid email"
             ___tip = render_template("___tip.html", status="error", message=error_message)
             return f"""<browser mix-after-begin="#tooltip">{___tip}</browser>""", 400
 
         if not check_password_hash(user["user_password"], user_password):
-            error_message = "Invalid credentials 2"
+            error_message = "Invalid password"
             ___tip = render_template("___tip.html", status="error", message=error_message)
             return f"""<browser mix-after-begin="#tooltip">{___tip}</browser>""", 400            
 
         user.pop("user_password")
         session["user"] = user
 
-        return f"""<browser mix-redirect="/profile"></browser>"""
+        return f"""<browser mix-redirect="/profile"></browser>""", 201
 
     except Exception as ex:
         ic(ex)
@@ -165,35 +162,41 @@ def show_profile():
         cursor.execute(q,(user["user_pk"],))
         destinations = cursor.fetchall()
 
-        return render_template("page_profile.html", user=user, x=x, countries=x.COUNTRIES, destinations=destinations)
+        return render_template("page_profile.html", user=user, x=x, countries=x.COUNTRIES, destinations=destinations), 200
     except Exception as ex:
         ic(ex)
-        return "ups"
+        return "System under maintenance", 500
 
 ##############################
 @app.get("/logout")
 def logout():
     try:
         session.clear()
-        return redirect("/login")
+        return redirect("/login"),200
     except Exception as ex:
         ic(ex)
-        return "ups"    
+        return "System under maintenance", 500   
 
 ##############################
 @app.delete("/user_destinations/<destination_pk>")
 def delete_destination(destination_pk):
     try: 
+        
+        user = session.get("user")
+        if not user: return "Unauthorized", 401
+
+        logged_in_user_pk = session["user"]["user_pk"]
+
         db, cursor = x.db()
-        q = "DELETE FROM user_destinations WHERE destination_pk = %s"
-        cursor.execute(q, (destination_pk,))
+        q = "DELETE FROM user_destinations WHERE destination_pk = %s AND user_fk = %s"
+        cursor.execute(q, (destination_pk, logged_in_user_pk))
         db.commit()
 
         return f"""<browser mix-remove="#destination-{destination_pk}" 
-                mix-fade-2000></browser> """
+                mix-fade-2000></browser> """, 204
     except Exception as ex: 
         ic(ex)
-        return "ups ...", 500
+        return "System under maintenance", 500
     finally: 
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
@@ -202,13 +205,19 @@ def delete_destination(destination_pk):
 @app.get("/user_destinations/<destination_pk>")
 def get_destination_by_id(destination_pk):
     try:
-        # Best case scenario
-        # TODO: Validate the id
+
+        user = session.get("user")
+        if not user: return redirect("/login")
+
+        logged_in_user_pk = session["user"]["user_pk"]
 
         db, cursor = x.db()
-        q = "SELECT * FROM user_destinations WHERE destination_pk = %s"
-        cursor.execute(q, (destination_pk,))
+        q = "SELECT * FROM user_destinations WHERE destination_pk = %s AND user_fk = %s"
+        cursor.execute(q, (destination_pk, logged_in_user_pk))
         destination = cursor.fetchone()
+
+        if not destination:
+            return "Destination not found", 404
 
         destination_more_html = render_template("___destination_more.html", destination=destination)
 
@@ -216,10 +225,10 @@ def get_destination_by_id(destination_pk):
             <browser>
             {destination_more_html}
             </browser>
-        """
+        """, 200
     except Exception as ex:
         ic(ex)
-        return "ups ...", 500
+        return "System under maintenance", 500
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
@@ -241,10 +250,10 @@ def travel_detail(destination_pk):
         if not destination:
             return redirect("/profile")
 
-        return render_template("page_travel_details.html", user=user, x=x, countries=x.COUNTRIES, destination=destination)
+        return render_template("page_travel_details.html", user=user, x=x, countries=x.COUNTRIES, destination=destination), 200
     except Exception as ex:
         ic(ex)
-        return "Could not get edit page",500
+        return "System under maintenance. Could not get edit page",500
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
@@ -266,7 +275,7 @@ def show_update_destination(destination_pk):
         if not destination:
             return redirect("/profile")
 
-        return render_template("page_update_destination.html", user=user, x=x, countries=x.COUNTRIES, destination=destination)
+        return render_template("page_update_destination.html", user=user, x=x, countries=x.COUNTRIES, destination=destination), 200
     except Exception as ex:
         ic(ex)
         return "Could not get edit page",500
@@ -330,7 +339,7 @@ def update_destination_by_id(destination_pk):
         cursor.execute(q, values)
         db.commit()
 
-        return """ <browser mix-redirect="page_profile.html"></browser>"""
+        return """ <browser mix-redirect="page_profile.html"></browser>""", 200
 
     except Exception as ex:
         ic(ex)
@@ -379,7 +388,7 @@ def show_create_destination():
         q = "SELECT * FROM user_destinations WHERE user_fk = %s"
         cursor.execute(q,(user["user_pk"],))
 
-        return render_template("page_create_destination.html", user=user, x=x, countries=x.COUNTRIES)
+        return render_template("page_create_destination.html", user=user, x=x, countries=x.COUNTRIES), 200
     except Exception as ex:
         return "system under maintenance ...", 500
 
@@ -428,7 +437,7 @@ def add_destination():
             {destination_html}
         </browser>
         <browser mix-after-begin="#tooltip">{___tip}</browser>
-        """
+        """, 201
 
     except Exception as ex: 
 

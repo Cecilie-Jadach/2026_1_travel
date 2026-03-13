@@ -34,5 +34,8 @@ document.getElementById("formLogin").addEventListener("submit", (e: Event) => {
 
     if (password.trim() == "") {
     addPasswordErrorLogin("Password is required.");
-}
+} else if
+    (password.length < 2) {
+    addPasswordErrorLogin("Password must be at least 8 characters.");
+    }
 })
