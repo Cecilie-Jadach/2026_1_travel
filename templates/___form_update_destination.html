@@ -1,0 +1,80 @@
+<div id="tooltip"></div>
+<div class="form-container">
+    <h1>Edit destination</h1>
+    <form id="formDestination" mix-patch="/api-update-destination/{{ destination.destination_pk }}" novalidate>
+    <div>
+        <label for="destination_title">Title*</label>
+        <input  id="destination_title" 
+                name="destination_title" 
+                type="text" 
+                placeholder="title" 
+                required
+                value="{{ destination.destination_title if destination else '' }}" 
+                mix-validate="{{ x.REGEX_DESTINATION_TITLE }}">
+    
+                <ul id="destination_title_errors"></ul>
+    </div>
+    
+    <div>
+        <label for="destination_start_date">Start date*</label>
+        <input  id="destination_start_date" 
+                name="destination_start_date" 
+                type="date" 
+                required
+                value="{{ destination.destination_start_date if destination else '' }}">
+    
+                <ul id="destination_start_date_errors"></ul>
+    </div>
+    
+    <div>
+        <label for="destination_end_date">End date*</label>
+        <input  id="destination_end_date" 
+                name="destination_end_date" 
+                type="date" 
+                required
+                value="{{ destination.destination_end_date if destination else '' }}">
+    
+                <ul id="destination_end_date_errors"></ul>
+    </div>
+    
+    <div>
+        <label for="destination_description">Description</label>
+        <textarea  id="destination_description" 
+                name="destination_description"  
+                placeholder="Description" 
+                mix-validate="{{ x.REGEX_DESTINATION_DESCRIPTION }}">{{ destination.destination_description if destination else '' }}</textarea>
+    
+                <ul id="destination_description_errors"></ul>
+    </div>
+    
+    <div>
+        <label for="destination_location">Location*</label>
+        <input  id="destination_location" 
+                name="destination_location" 
+                type="text"
+                required 
+                placeholder="Location" 
+                value="{{ destination.destination_location if destination else '' }}" 
+                mix-validate="{{ x.REGEX_DESTINATION_LOCATION }}">
+    
+                <ul id="destination_location_errors"></ul>
+    </div>
+    
+    <div>
+        <label for="destination_country">Country</label>
+        <select id="destination_country" name="destination_country">
+        {% for country in x.COUNTRIES %}
+            <option value="{{ country }}" 
+            {% if country is equalto destination.destination_country %}selected{% endif %}>{{ country }}</option>
+        {% endfor %}
+        </select>
+    
+        <ul id="destination_country_errors"></ul>
+    </div>
+    
+    
+    <button class="primary-btn">Update</button>
+        
+    </form>
+
+</div>
