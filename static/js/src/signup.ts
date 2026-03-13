@@ -12,7 +12,7 @@ document.getElementById("formSignup").addEventListener("submit", (e: Event) => {
     document.getElementById("user_first_name_errors_signup").textContent = '';
 
     if (firstNameSignup.trim() == "") {
-    addErrorFirstName("First name must be filled out"); 
+    addErrorFirstName("First name is required."); 
     }
     else if
     (firstNameSignup.length < 2) {
@@ -38,7 +38,7 @@ document.getElementById("formSignup").addEventListener("submit", (e: Event) => {
     document.getElementById("user_last_name_errors_signup").textContent = '';
 
     if (lastNameSignup.trim() == "") {
-    addErrorLastName("Last name must be filled out"); 
+    addErrorLastName("Last name is required."); 
     }
     else if
     (lastNameSignup.length < 2) {
@@ -64,7 +64,7 @@ document.getElementById("formSignup").addEventListener("submit", (e: Event) => {
     document.getElementById("email_errors_signup").textContent = '';
 
     if (emailSignup.trim() == "") {
-    addEmailErrorSignUp("Email must be filled out");
+    addEmailErrorSignUp("Email is required.");
     } else {
     if(!emailSignup.includes("@")) {
     addEmailErrorSignUp("Email must include a @")
@@ -85,6 +85,6 @@ document.getElementById("formSignup").addEventListener("submit", (e: Event) => {
     document.getElementById("password_errors_signup").textContent = '';
 
     if (passwordSignup.trim() == "") {
-    addPasswordErrorSignUp("Password must be filled out");
+    addPasswordErrorSignUp("Password is required.");
 }
 })
