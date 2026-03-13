@@ -172,7 +172,7 @@ def show_profile():
 def logout():
     try:
         session.clear()
-        return redirect("/login"),200
+        return redirect("/login")
     except Exception as ex:
         ic(ex)
         return "System under maintenance", 500   
@@ -193,7 +193,7 @@ def delete_destination(destination_pk):
         db.commit()
 
         return f"""<browser mix-remove="#destination-{destination_pk}" 
-                mix-fade-2000></browser> """, 204
+                mix-fade-2000></browser> """, 200
     except Exception as ex: 
         ic(ex)
         return "System under maintenance", 500
