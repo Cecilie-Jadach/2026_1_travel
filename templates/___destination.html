@@ -1,5 +1,17 @@
-<div id="destination-{{ destination.destination_pk }}" class="destination">
-    
+<div id="destination-{{ destination.destination_pk }}" class="destination">  
+
+    <!-- CONFORMATION DIALOG FOR DELETION MODAL -->
+    <div id="modal-{{ destination.destination_pk }}" class="modal-overlay hidden">
+        <div class="dialog-container">
+            <p>Are you sure that you want to delete the destination: <strong>{{ destination.destination_title }}?</strong></p>
+            <div>
+                <button class="secondary_btn" onclick="toggleModal('{{ destination.destination_pk }}')">No, return til home</button>
+                <button id="confirm-delete-btn" class="primary-btn" mix-delete="/user_destinations/{{ destination.destination_pk }}">Yes, delete destination</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DESTINATION CARD -->
     <div class="destination-container">
         <h2>{{ destination.destination_start_date }} - {{ destination.destination_end_date }}</h2>
         <div class="flex-container">
@@ -11,7 +23,7 @@
                 </div>
             </div>
             <div class="events-container">
-                <button class="delete-btn" mix-delete="/user_destinations/{{ destination.destination_pk }}"></button>
+                <button class="delete-btn" onclick="toggleModal('{{ destination.destination_pk }}')"></button>
                 <a class="edit" href="/update-destination/{{ destination.destination_pk }}">
                     <img src="/static/svg/pen.svg" alt="Pen" width="48" height="48">
                 </a>
@@ -19,10 +31,8 @@
     
         </div>
         
-        <a class="secondary_btn" href="/travel-details/{{ destination.destination_pk }}">
-            Show more
+        <a class="secondary_btn end" href="/travel-details/{{ destination.destination_pk }}">
+            View details
         </a>
     </div>
-
-
 </div>

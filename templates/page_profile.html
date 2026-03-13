@@ -2,24 +2,28 @@
 
 <main>
 <section class="user-container">
-    <div>
-        <h1>Welcome {{ user.user_first_name }}!</h1>
-        <p>Start logging your travels!</p>
-    </div>
-</section>
-<section class="wrapper">
+        <div>
+            <h1>Welcome {{ user.user_first_name }}!</h1>
+        </div>
+    </section>
+
+    <section class="wrapper">
         <div id="destinations" class="destination-wrapper">
             {% for destination in destinations %}
                 {% include "___destination.html" %}
+                <div class="sticky-container">
+                    <a class="primary-btn shadow" href="/create-destination">+ Add new trip</a>
+                </div>
             {% else %}
-                <p>You have not logged any travels yet.</p>
+                <div class="empty-state">
+                    <p>You have not logged any travels yet.</p>
+                    <div class="sticky-container">
+                        <a class="primary-btn" href="/create-destination">Log your first trip!</a>
+                    </div>
+                </div>
             {% endfor %}
-            
         </div>
     </section>
-<div class="sticky-container">
-    <a href="/create-destination">Log new travel destination</a>
-</div>
 </main>
 
 {% include "_footer.html" %}

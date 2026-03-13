@@ -111,3 +111,12 @@ document.getElementById("formDestination").addEventListener("submit", (e: Event)
 //     addPasswordErrorSignUp("Country is required.");
 // }
 // })
+
+/////////////// CONFIRMATION DIALOG FOR DELETION MODAL FUNCTIONALITY ///////////////
+function toggleModal(pk: string): void {
+    const modal = document.querySelector<HTMLElement>(`#modal-${pk}`);
+    if (modal) {
+        // add or remove the class hidden
+        modal.classList.toggle('hidden');
+    }
+}
