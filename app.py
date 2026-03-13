@@ -132,7 +132,6 @@ def api_login():
     except Exception as ex:
         ic(ex)
 
-
         if "--error-- user_email" in str(ex):
             error_message = f"user email invalid"
             ___tip = render_template("___tip.html", status="error", message=error_message)
@@ -283,51 +282,43 @@ def update_destination_by_id(destination_pk):
         parts = []
         values = []
 
-        destination_title = request.form.get("destination_title", "")
-        destination_title = destination_title.strip()
+        destination_title = x.validate_destination_title()
+        destination_start_date = x.validate_destination_start_date()
+        destination_end_date = x.validate_destination_end_date(destination_start_date)
+        destination_description = x.validate_destination_description()
+        destination_location = x.validate_destination_location()
+        destination_country = request.form.get("destination_country", "")
+        
         if destination_title:
             parts.append("destination_title = %s")
             values.append(destination_title)
 
-        destination_start_date = request.form.get("destination_start_date", "")
-        destination_start_date = destination_start_date
         if destination_start_date:
             parts.append("destination_start_date = %s")
             values.append(destination_start_date)
         
-        destination_end_date = request.form.get("destination_end_date", "")
-        destination_end_date = destination_end_date
         if destination_end_date:
             parts.append("destination_end_date = %s")
             values.append(destination_end_date)
         
-        destination_description = request.form.get("destination_description", "")
-        destination_description = destination_description.strip()
         if destination_description:
             parts.append("destination_description = %s")
             values.append(destination_description)
         
-        destination_location = request.form.get("destination_location", "")
-        destination_location = destination_location.strip()
         if destination_location:
             parts.append("destination_location = %s")
             values.append(destination_location)
         
-        destination_country = request.form.get("destination_country", "")
-        # destination_country = destination_country.strip()
         if destination_country:
             parts.append("destination_country = %s")
             values.append(destination_country)
 
         if not parts: return "nothing to update", 400
-        # Convert the list to a string with a comma in between
 
         values.append(destination_pk)
-        partial_query = ", ".join(parts)
 
-        # ic(parts)
-        # ic(values)
-        ic(partial_query)
+        # Convert the list to a string with a comma in between
+        partial_query = ", ".join(parts)
 
         q = f"""
             UPDATE user_destinations
@@ -341,11 +332,37 @@ def update_destination_by_id(destination_pk):
 
         return """ <browser mix-redirect="page_profile.html"></browser>"""
 
-
     except Exception as ex:
-        print(ex)
+        ic(ex)
+
+        if "--error-- destination_title" in str(ex):
+            error_message = f"destination title invalid"
+            ___tip = render_template("___tip.html", status="error", message=error_message)
+            return f"""<browser mix-after-begin="#tooltip">{___tip}</browser>""", 400
+
+        if "--error-- destination_description" in str(ex):
+            error_message = f"destination description invalid"
+            ___tip = render_template("___tip.html", status="error", message=error_message)
+            return f"""<browser mix-after-begin="#tooltip">{___tip}</browser>""", 400
+
+        if "--error-- destination_location" in str(ex):
+            error_message = f"destination location invalid"
+            ___tip = render_template("___tip.html", status="error", message=error_message)
+            return f"""<browser mix-after-begin="#tooltip">{___tip}</browser>""", 400
+
+        if "--error-- end date can not be before start date" in str(ex):
+            error_message = "End date can not be before start date"
+            ___tip = render_template("___tip.html", status="error", message=error_message)
+            return f"""<browser mix-after-begin="#tooltip">{___tip}</browser>""", 400
+
+        # Worst case
+        error_message = "System under maintenance"
+        ___tip = render_template("___tip.html", status="error", message=error_message)        
+        return f"""<browser mix-after-begin="#tooltip">{___tip}</browser>""", 500
+
+
         # Cast the exception to an string
-        return str(ex), 500 # Internal server error
+        # return str(ex), 500 # Internal server error
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()

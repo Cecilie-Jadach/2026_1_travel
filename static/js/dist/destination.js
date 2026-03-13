@@ -9,7 +9,7 @@ document.getElementById("formDestination").addEventListener("submit", (e) => {
     const destinationTitle = document.getElementById("destination_title").value;
     document.getElementById("destination_title_errors").textContent = '';
     if (destinationTitle.trim() == "") {
-        addErrorTitle("Title must be filled out");
+        addErrorTitle("Title is required.");
     }
     else if (destinationTitle.length < 2) {
         addErrorTitle("Title must be at least 2 characters");
@@ -18,32 +18,38 @@ document.getElementById("formDestination").addEventListener("submit", (e) => {
         addErrorTitle("Title cannot exceed 50 characters");
     }
 });
-/////////////// DESTINATION START DATE VALIDATION ///////////////
-function addErrorStartDate(errormessage) {
+/////////////// DESTINATION DATE VALIDATION ///////////////
+// Vi tilføjer 'targetId', så funktionen ved, hvor fejlen skal hen
+function addErrorDate(targetId, errormessage) {
     const li = document.createElement("li");
     li.textContent = errormessage;
-    document.getElementById("destination_start_date_errors").appendChild(li);
-}
-document.getElementById("formDestination").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const destionationStartDate = document.getElementById("destination_start_date").value;
-    document.getElementById("destination_start_date_errors").textContent = '';
-    if (destionationStartDate.trim() == "") {
-        addErrorStartDate("Start date must be filled out");
+    // Find den specifikke liste baseret på targetId
+    const targetList = document.getElementById(targetId);
+    if (targetList) {
+        targetList.appendChild(li);
     }
-});
-/////////////// DESTINATION END DATE VALIDATION ///////////////
-function addErrorEndDate(errormessage) {
-    const li = document.createElement("li");
-    li.textContent = errormessage;
-    document.getElementById("destination_end_date_errors").appendChild(li);
 }
 document.getElementById("formDestination").addEventListener("submit", (e) => {
     e.preventDefault();
-    const destionationEndDate = document.getElementById("destination_end_date").value;
+    const startDateVal = document.getElementById("destination_start_date").value;
+    const endDateVal = document.getElementById("destination_end_date").value;
+    document.getElementById("destination_start_date_errors").textContent = '';
     document.getElementById("destination_end_date_errors").textContent = '';
-    if (destionationEndDate.trim() == "") {
-        addErrorEndDate("End date must be filled out");
+    // 1. Tjek start dato - sendes kun til start_date_errors
+    if (startDateVal.trim() == "") {
+        addErrorDate("destination_start_date_errors", "Start date is required.");
+    }
+    // 2. Tjek slut dato - sendes kun til end_date_errors
+    if (endDateVal.trim() == "") {
+        addErrorDate("destination_end_date_errors", "End date is required.");
+    }
+    // 3. Sammenligning - sendes kun til end_date_errors
+    if (startDateVal && endDateVal) {
+        const start = new Date(startDateVal);
+        const end = new Date(endDateVal);
+        if (end < start) {
+            addErrorDate("destination_end_date_errors", "End date cannot be before start date");
+        }
     }
 });
 /////////////// DESTINATION LOCATION VALIDATION ///////////////
@@ -54,10 +60,10 @@ function addErrorLocation(errormessage) {
 }
 document.getElementById("formDestination").addEventListener("submit", (e) => {
     e.preventDefault();
-    const destinationLocation = document.getElementById("destination_title").value;
+    const destinationLocation = document.getElementById("destination_location").value;
     document.getElementById("destination_location_errors").textContent = '';
     if (destinationLocation.trim() == "") {
-        addErrorLocation("Location must be filled out");
+        addErrorLocation("Location is required.");
     }
     else if (destinationLocation.length < 2) {
         addErrorLocation("Location must be at least 2 characters");
@@ -77,7 +83,7 @@ document.getElementById("formDestination").addEventListener("submit", (e) => {
 //     const destinationCountry = (document.getElementById("user_password") as HTMLInputElement).value;
 //     document.getElementById("destination_country_errors").textContent = '';
 //     if (destinationCountry.trim() == "") {
-//     addPasswordErrorSignUp("Country must be filled out");
+//     addPasswordErrorSignUp("Country is required.");
 // }
 // })
 //# sourceMappingURL=destination.js.map

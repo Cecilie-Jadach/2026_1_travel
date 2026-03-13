@@ -12,7 +12,7 @@ document.getElementById("formLogin").addEventListener("submit", (e: Event) => {
     document.getElementById("email_errors_login").textContent = '';
 
     if (emailLogin.trim() == "") {
-    addEmailErrorLogin("Email must be filled out");
+    addEmailErrorLogin("Email is required.");
     } else {
     if(!emailLogin.includes("@")) {
     addEmailErrorLogin("Email must include a @")
@@ -33,6 +33,6 @@ document.getElementById("formLogin").addEventListener("submit", (e: Event) => {
     document.getElementById("password_errors_login").textContent = '';
 
     if (password.trim() == "") {
-    addPasswordErrorLogin("Password must be filled out");
+    addPasswordErrorLogin("Password is required.");
 }
 })

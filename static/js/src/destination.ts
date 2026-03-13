@@ -12,7 +12,7 @@ document.getElementById("formDestination").addEventListener("submit", (e: Event)
     document.getElementById("destination_title_errors").textContent = '';
 
     if (destinationTitle.trim() == "") {
-    addErrorTitle("Title must be filled out"); 
+    addErrorTitle("Title is required."); 
     }
     else if
     (destinationTitle.length < 2) {
@@ -24,41 +24,49 @@ document.getElementById("formDestination").addEventListener("submit", (e: Event)
     }
 })
 
-/////////////// DESTINATION START DATE VALIDATION ///////////////
-function addErrorStartDate(errormessage:string):void {
+/////////////// DESTINATION DATE VALIDATION ///////////////
+// Vi tilføjer 'targetId', så funktionen ved, hvor fejlen skal hen
+function addErrorDate(targetId: string, errormessage: string): void {
     const li = document.createElement("li");
     li.textContent = errormessage;
-    document.getElementById("destination_start_date_errors").appendChild(li)
+    // Find den specifikke liste baseret på targetId
+    const targetList = document.getElementById(targetId);
+    if (targetList) {
+        targetList.appendChild(li);
+    }
 }
 
 document.getElementById("formDestination").addEventListener("submit", (e: Event) => {
     e.preventDefault();
-    const destionationStartDate = (document.getElementById("destination_start_date") as HTMLInputElement).value;
+    
+    const startDateVal = (document.getElementById("destination_start_date") as HTMLInputElement).value;
+    const endDateVal = (document.getElementById("destination_end_date") as HTMLInputElement).value;
 
     document.getElementById("destination_start_date_errors").textContent = '';
-
-    if (destionationStartDate.trim() == "") {
-    addErrorStartDate("Start date must be filled out"); 
-    }
-})
-
-/////////////// DESTINATION END DATE VALIDATION ///////////////
-function addErrorEndDate(errormessage:string):void {
-    const li = document.createElement("li");
-    li.textContent = errormessage;
-    document.getElementById("destination_end_date_errors").appendChild(li)
-}
-
-document.getElementById("formDestination").addEventListener("submit", (e: Event) => {
-    e.preventDefault();
-    const destionationEndDate = (document.getElementById("destination_end_date") as HTMLInputElement).value;
-
     document.getElementById("destination_end_date_errors").textContent = '';
 
-    if (destionationEndDate.trim() == "") {
-    addErrorEndDate("End date must be filled out"); 
+    // 1. Tjek start dato - sendes kun til start_date_errors
+    if (startDateVal.trim() == "") {
+        addErrorDate("destination_start_date_errors", "Start date is required."); 
     }
-})
+
+    // 2. Tjek slut dato - sendes kun til end_date_errors
+    if (endDateVal.trim() == "") {
+        addErrorDate("destination_end_date_errors", "End date is required."); 
+    }
+
+    // 3. Sammenligning - sendes kun til end_date_errors
+    if (startDateVal && endDateVal) {
+        const start = new Date(startDateVal);
+        const end = new Date(endDateVal);
+
+        if (end < start) {
+            addErrorDate("destination_end_date_errors", "End date cannot be before start date");
+        }
+    }
+});
+
+
 
 /////////////// DESTINATION LOCATION VALIDATION ///////////////
 function addErrorLocation(errormessage:string):void {
@@ -69,12 +77,12 @@ function addErrorLocation(errormessage:string):void {
 
 document.getElementById("formDestination").addEventListener("submit", (e: Event) => {
     e.preventDefault();
-    const destinationLocation = (document.getElementById("destination_title") as HTMLInputElement).value;
+    const destinationLocation = (document.getElementById("destination_location") as HTMLInputElement).value;
 
     document.getElementById("destination_location_errors").textContent = '';
 
     if (destinationLocation.trim() == "") {
-    addErrorLocation("Location must be filled out"); 
+    addErrorLocation("Location is required."); 
     }
     else if
     (destinationLocation.length < 2) {
@@ -100,6 +108,6 @@ document.getElementById("formDestination").addEventListener("submit", (e: Event)
 //     document.getElementById("destination_country_errors").textContent = '';
 
 //     if (destinationCountry.trim() == "") {
-//     addPasswordErrorSignUp("Country must be filled out");
+//     addPasswordErrorSignUp("Country is required.");
 // }
 // })
